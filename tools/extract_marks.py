@@ -50,8 +50,10 @@ def find_frame(ink, side, ncol):
     hl = [r for r in runs(rows > 0.40) if r[1] - r[0] < 40]
     tops = [r for r in hl if 0.08 * h < r[0] < 0.33 * h]
     bots = [r for r in hl if 0.75 * h < r[1] < 0.96 * h]
-    top = tops[-1][1] if tops else int(0.2 * h)
-    bot = bots[0][0] if bots else int(0.9 * h)
+    # several long dark rows can qualify (a stroke inside the frame, the page edge): take the
+    # one nearest where the frame lines sit on these leaves (0.19 and 0.91 of the height)
+    top = min(tops, key=lambda r: abs(r[1] - 0.19 * h))[1] if tops else int(0.19 * h)
+    bot = min(bots, key=lambda r: abs(r[0] - 0.91 * h))[0] if bots else int(0.91 * h)
     # the outer border (thick) is on the binding side: left on a verso, right on a recto;
     # the text area has the block's fixed proportions, so the other edge follows from it
     band = ink[top + 30: bot - 30]
