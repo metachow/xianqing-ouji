@@ -316,7 +316,8 @@ def render(scan, info, lay, page, variants, applied):
                 put(x, y, it[1], it[2], glyph, lay['font'], (c + 1, math.floor(r) + 1))
                 mk = it[2] if layer is None else layer.get((scan, c + 1, k_item))
                 if mk:      # in the gutter, next to the column rule, at the lower part of the glyph
-                    out.append(mark(x + 0.44 * pitch_x, y - 0.32 * glyph, mk, 0.9 * min(sc, 1.25)))
+                    out.append(mark(x + lay.get('mark_dx', 0.44) * pitch_x, y - 0.32 * glyph, mk,
+                                    0.9 * min(sc, 1.25)))
                 r += 1
                 continue
             # double-line note: two half-columns of small characters

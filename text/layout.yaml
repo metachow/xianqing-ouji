@@ -36,6 +36,7 @@ layouts:
     rows: 20
     font: songT       # condensed (tall, narrow) like the Kangxi 宋體
     size: 0.90
+    mark_dx: 0.37     # marks between the (narrow) glyph and the rule, not on the rule
     indent: 3
     note_pitch: 1.0   # 066: six small characters fill six rows
     note_size: 0.70
