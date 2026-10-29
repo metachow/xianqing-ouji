@@ -1,0 +1,14 @@
+% 書衣（後）：同色素面，訂線在左；下方小字為本版說明。
+\begin{tikzpicture}[remember picture,overlay,shift={(current page.south west)},xshift=\edxshift,x=1mm,y=1mm]
+  \node[anchor=south west,inner sep=0pt] at (0,0)
+    {\includegraphics[width=160.9mm,height=254mm]{figures/cover_indigo.jpg}};
+  \sewing{11}{-1}
+  \node[text=coverpale,align=center,text width=110mm,inner sep=0pt,anchor=south] at (82,22)
+    {\songR\fontsize{8.5pt}{14pt}\selectfont
+     \XeTeXlinebreaklocale "zh"\XeTeXlinebreakskip=0pt plus 1pt
+     清李漁撰《閒情偶寄》第一冊　重排本\par
+     底本：北京大學圖書館藏康熙間翼聖堂刻本　參校：哈佛燕京圖書館藏本\par
+     錄文、校對、排版：Claude（Anthropic）輔助，二〇二六年\par
+     原書文字屬公有領域；本版排版、校記以 CC BY 4.0 釋出；卷一句讀據維基文庫（CC BY-SA 4.0）\par
+     github.com/metachow/xianqing-ouji\par};
+\end{tikzpicture}

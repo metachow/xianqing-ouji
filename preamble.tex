@@ -1,0 +1,76 @@
+% Shared by main.tex and the per-page checks (tools/check_page.py). Compile from the project root.
+\usepackage[paperwidth=160.9mm,paperheight=254mm,margin=0mm]{geometry}
+\usepackage{fontspec}
+\usepackage{tikz}
+\pagestyle{empty}
+
+\newfontfamily\song{NotoSerifTC-SemiBold.otf}[Path=fonts/]
+% 全字庫正楷體 is thin beside the written-out preface; embolden it a little
+\newfontfamily\kai{TW-Kai.ttf}[Path=fonts/,FakeBold=1.6]
+
+\usepackage[hidelinks,bookmarksopen,bookmarksopenlevel=1]{hyperref}
+
+% Covers and title leaf (front/*.tex)
+\newfontfamily\songB{NotoSerifTC-Bold.otf}[Path=fonts/]
+% condensed, for the densely cut 牌記 (tall narrow characters filling the cell)
+\newfontfamily\songN{NotoSerifTC-SemiBold.otf}[Path=fonts/,FakeStretch=0.9]
+\definecolor{slipink}{RGB}{48,40,30}
+\definecolor{threadcol}{RGB}{233,227,211}
+\definecolor{coverpale}{RGB}{214,206,184}
+% \sewing{x}{dir}: 四眼訂線 with holes at x mm, loops running to the spine edge in
+% direction dir (+1 right, -1 left); used inside a tikzpicture with x=y=1mm
+\newcommand\sewing[2]{%
+  \def\edgex{\ifnum#2>0 160.9\else 0\fi}%
+  \begin{scope}[threadcol,line width=0.7mm,line cap=round]
+    \draw (#1,254) -- (#1,0);
+    \foreach \y in {25.4,91.4,162.6,228.6}{
+      \draw (#1,\y) -- (\edgex,\y);
+      \fill[black!70] (#1,\y) circle (0.55);}
+  \end{scope}}
+% \vertical{字字字}: one character per line (for narrow text-width nodes)
+\ExplSyntaxOn
+\NewDocumentCommand\vertical{m}{\tl_map_inline:en{#1}{##1\par}}  % e: also takes a macro (\foreach)
+\cs_generate_variant:Nn \tl_map_inline:nn {en}
+\ExplSyntaxOff
+
+% one edition page per scan; the target lets 校記 entries link to it
+\newcommand\edpage[1]{\null\hypertarget{scan-#1}{}\input{pages/#1}\newpage}
+
+% Openings (main_spread.tex): one PDF page = one opening of the book, as the Harvard
+% scans show it -- b side of a leaf on the right, a side of the next leaf on the left,
+% 版心 at the outer edges -- so every viewer shows it right, whatever it does with
+% /Direction R2L. Pages draw at \edxshift; the paper width changes page by page.
+\newdimen\edxshift \edxshift=0pt
+\newcommand\setpaper[1]{\paperwidth=#1\relax\pdfpagewidth=#1\relax}
+\newcommand\edspread[2]{% #1 right half, #2 left half (either may be empty)
+  \setpaper{321.8mm}\null
+  \if\relax\detokenize{#1}\relax\else\hypertarget{scan-#1}{}\fi
+  \if\relax\detokenize{#2}\relax\else\hypertarget{scan-#2}{}\fi
+  \if\relax\detokenize{#1}\relax\else{\edxshift=160.9mm\input{pages/#1}}\fi
+  \if\relax\detokenize{#2}\relax\else{\edxshift=0pt\input{pages/#2}}\fi
+  \newpage}
+\newcommand\edsingle[1]{\setpaper{160.9mm}\edpage{#1}}
+% PDF outline entry pointing at the next page
+\newcommand\edbookmark[2]{\pdfbookmark[#1]{#2}{bm-\thepage-#2}}
+
+% Back matter (編輯說明, 異體字統一表, 校記): horizontal, modern setting.
+% XeTeX's own CJK line breaking (no xeCJK: it would interfere with the page fonts).
+\newfontfamily\songR{NotoSerifTC-Regular.otf}[Path=fonts/]
+\newenvironment{appendixpages}{%
+  \newgeometry{top=28mm,bottom=28mm,left=24mm,right=24mm}%
+  \songR\fontsize{10.5pt}{19pt}\selectfont
+  \XeTeXlinebreaklocale "zh"\XeTeXlinebreakskip=0pt plus 1.5pt\emergencystretch=2em
+  \setlength\parindent{2em}\setlength\parskip{2pt}\raggedbottom}{\restoregeometry}
+% \apxsection{target}{title}: heading with a link target and an outline entry
+\newcommand\apxsection[2]{\par\bigskip\hypertarget{#1}{}\pdfbookmark[0]{#2}{bm-#1}%
+  {\centering\song\fontsize{15pt}{22pt}\selectfont #2\par}\medskip}
+% original (variant) glyphs in the 異體字統一表: Noto lacks several; 全字庫 has them all
+\newfontfamily\twsung{TW-Sung.ttf}[Path=fonts/]
+\newcommand\orig[1]{{\twsung #1}}
+\newcommand\apxref[2]{\hyperlink{#1}{\textcolor{linkcol}{#2}}}
+\definecolor{linkcol}{RGB}{150,30,20}
+\newenvironment{vartable}{\par\medskip\centering
+  \begin{tabular}{*{3}{c@{\enspace}c@{\enspace}c@{\quad}r@{\hspace{3em}}}}}%
+  {\end{tabular}\par\medskip}
+\newenvironment{jiaoji}{\begin{list}{}{\setlength\leftmargin{2em}\setlength\labelwidth{0pt}%
+  \setlength\itemindent{-2em}\setlength\itemsep{3pt}\renewcommand\makelabel[1]{\song ##1　}}}{\end{list}}

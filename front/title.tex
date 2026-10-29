@@ -1,0 +1,26 @@
+% 扉葉：據哈佛燕京藏本重排（北大本缺）。圓角框分三欄：右「笠翁秘書第一種」，
+% 中大字書名（原刻隸書，取自哈佛本影像），左翼聖堂主人牌記四行。異體依本版體例改通行字。
+% 牌記照原刻密排：每行十八字只佔框高上部約七成，字字相接，下方留白。
+\begin{tikzpicture}[remember picture,overlay,shift={(current page.south west)},xshift=\edxshift,x=1mm,y=1mm]
+  \draw[line width=1mm,rounded corners=5mm] (17,32) rectangle (144,216);
+  \draw[line width=0.3mm] (124,216) -- (124,32);
+  \draw[line width=0.3mm] (58,216) -- (58,32);
+  % right column
+  \foreach \c [count=\i from 0] in {笠,翁,秘,書,第,一,種}
+    \node[inner sep=0pt] at (134,{204-\i*15}) {\fontsize{32pt}{32pt}\song \c};
+  % title: the original 隸書, cut from the Harvard scan (tools/make_title_art.py) at its
+  % own size (~11.3 px/mm in that scan)
+  \node[inner sep=0pt] at (91,124) {\includegraphics[height=167mm]{figures/title_lishu.png}};
+  % 牌記: four columns of eighteen, 7.3 mm per character
+  \def\pjrow{7.3}
+  \foreach \line [count=\k from 0] in {
+      先生之書充塞宇宙人謂奇矣絕矣莫能加矣,
+      先生自視蔑如也謂生平奇絕處儘有但不在,
+      從前剖方中倘出枕中所秘者公世或能真見,
+      笠翁乎因授是編梓為後勁}
+    {\pgfmathsetmacro\x{58-(\k+0.5)*9.6}
+     \node[inner sep=0pt,anchor=north,text width=9mm,align=center] at (\x,213.5)
+       {\fontsize{20pt}{\pjrow mm}\selectfont\songN\vertical{\line}};}
+  \node[inner sep=0pt,anchor=north,text width=9mm,align=center] at ({58-3.5*9.6},{213.5-12*\pjrow})
+    {\fontsize{20pt}{\pjrow mm}\selectfont\songN\vertical{翼聖堂主人識}};
+\end{tikzpicture}

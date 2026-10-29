@@ -1,0 +1,14 @@
+% 書衣（前）：磁青紙，左上題簽，右側四眼訂線（右翻之書，書腦在右）。
+% Background textures: tools/make_cover_bg.py.
+\begin{tikzpicture}[remember picture,overlay,shift={(current page.south west)},xshift=\edxshift,x=1mm,y=1mm]
+  \node[anchor=south west,inner sep=0pt] at (0,0)
+    {\includegraphics[width=160.9mm,height=254mm]{figures/cover_indigo.jpg}};
+  % 題簽: paper slip with a double ink border
+  \node[anchor=north west,inner sep=0pt] at (12,240) {\includegraphics[width=26mm,height=130mm]{figures/slip.jpg}};
+  \draw[slipink,line width=0.45mm] (14,238) rectangle (36,112);
+  \draw[slipink,line width=0.18mm] (15.1,236.9) rectangle (34.9,113.1);
+  \foreach \c [count=\i from 0] in {閒,情,偶,寄}
+    \node[slipink,inner sep=0pt] at (25,{226-\i*20}) {\fontsize{46pt}{46pt}\kai \c};
+  \node[slipink,inner sep=0pt] at (25,123) {\fontsize{24pt}{24pt}\kai 一};
+  \sewing{149.9}{1}
+\end{tikzpicture}

@@ -1,0 +1,162 @@
+# Page structure of volume 1 (PKU copy, IA 02097225.cn): scan number -> layout.
+# side a = recto (版心 on the left, fore-edge), b = verso (版心 on the right), from tools/detect_sides.py.
+# juan/leaf = what the 版心 shows (a page file can override it with @版心).
+# 圈點: each layout's `marks:` says which set is drawn on the main text --
+#   transcribed (default): the marks in text/v1 (序、總目、凡例: transcribed and proofread);
+#   wikisource: 句讀 from the punctuated Wikisource text (text/marks_wikisource.tsv, made by
+#   tools/wiki_punct.py). The transcription keeps its own (unverified) marks for 卷一 all the same.
+show_marks: true
+
+layouts:
+  preface:            # 余懷序, written-out script: 5 columns of 12
+    cols: 5
+    rows: 12
+    font: kai
+    size: 0.86        # glyph size as a fraction of the row pitch
+    indent: 0
+    marks: transcribed
+  toc:                # 總目 and 卷一目次
+    cols: 9
+    rows: 20
+    font: song
+    size: 0.80
+    indent: 0
+    note_pitch: 1.0   # double-line notes: rows per small character
+    note_size: 0.70   # small glyph / full glyph
+  fanli:              # 凡例七則: 8 columns of 18
+    cols: 8
+    rows: 18
+    font: song
+    size: 0.80
+    indent: 0
+    note_pitch: 1.0
+    note_size: 0.70
+  body:               # 卷一 ff.: 部 heading at row 0, section heading at row 1, text at row 3
+    cols: 9
+    rows: 20
+    font: song
+    size: 0.80
+    indent: 3
+    note_pitch: 1.0   # 066: six small characters fill six rows
+    note_size: 0.70
+    marks: wikisource # 句讀 only, for readability; the cut 圈點 (密圈 etc.) are not drawn yet
+
+pages:
+  '001': {layout: cover, side: a, juan: '', leaf: ''}
+  # front matter as in the Harvard copy: inside of the cover | blank, 扉葉 | blank, blank | 序一上
+  '001a': {layout: coverin, side: b, juan: '', leaf: ''}  # 書衣內面
+  '001b': {layout: blank, side: a, juan: '', leaf: ''}
+  '001c': {layout: title, side: b, juan: '', leaf: ''}   # 扉葉, from the Harvard copy
+  '001d': {layout: blank, side: a, juan: '', leaf: ''}
+  '001e': {layout: blank, side: b, juan: '', leaf: ''}   # back of the 扉葉
+  # 序
+  '002': {layout: preface, side: a, juan: 序, leaf: 一}
+  '003': {layout: preface, side: b, juan: 序, leaf: 一}
+  '004': {layout: preface, side: a, juan: 序, leaf: 二}
+  '005': {layout: preface, side: b, juan: 序, leaf: 二}
+  '006': {layout: preface, side: a, juan: 序, leaf: 三}
+  '007': {layout: preface, side: b, juan: 序, leaf: 三}
+  '008': {layout: preface, side: a, juan: 序, leaf: 四}
+  '009': {layout: preface, side: b, juan: 序, leaf: 四}
+  '010': {layout: preface, side: a, juan: 序, leaf: 五}
+  '011': {layout: preface, side: b, juan: 序, leaf: 五}
+  '012': {layout: preface, side: a, juan: 序, leaf: 六}
+  '013': {layout: preface, side: b, juan: 序, leaf: 六}
+  '014': {layout: preface, side: a, juan: 序, leaf: 七}
+  '015': {layout: preface, side: b, juan: 序, leaf: 七}
+  '016': {layout: preface, side: a, juan: 序, leaf: 八}
+  '016b': {layout: blank, side: b, juan: 序, leaf: 八}    # 序八下: blank (Harvard: two seals)
+  # Order follows the Harvard copy (序, 凡例, 總目); the PKU copy is bound 序, 總目, 凡例.
+  # Pages are laid out in the order of this list, not by scan number.
+  # 凡例
+  '022': {layout: fanli, side: a, juan: 凡例, leaf: 一}
+  '023': {layout: fanli, side: b, juan: 凡例, leaf: 一}
+  '024': {layout: fanli, side: a, juan: 凡例, leaf: 二}
+  '025': {layout: fanli, side: b, juan: 凡例, leaf: 二}
+  '026': {layout: fanli, side: a, juan: 凡例, leaf: 三}
+  '027': {layout: fanli, side: b, juan: 凡例, leaf: 三}
+  '028': {layout: fanli, side: a, juan: 凡例, leaf: 四}
+  '029': {layout: fanli, side: b, juan: 凡例, leaf: 四}
+  '030': {layout: fanli, side: a, juan: 凡例, leaf: 五}
+  '031': {layout: fanli, side: b, juan: 凡例, leaf: 五}
+  '032': {layout: fanli, side: a, juan: 凡例, leaf: 六}
+  '033': {layout: fanli, side: b, juan: 凡例, leaf: 六}
+  # 總目
+  '017': {layout: toc, side: a, juan: 總目, leaf: 一}
+  '018': {layout: toc, side: b, juan: 總目, leaf: 一}
+  '019': {layout: toc, side: a, juan: 總目, leaf: 二}
+  '020': {layout: toc, side: b, juan: 總目, leaf: 二}
+  '021': {layout: toc, side: a, juan: 總目, leaf: 三}
+  '021b': {layout: blank, side: b, juan: 總目, leaf: 三}  # 總目三下: blank
+  # 卷一目次
+  '034': {layout: toc, side: a, juan: 卷一目次, leaf: 一}
+  '035': {layout: toc, side: b, juan: 卷一目次, leaf: 一}
+  # 卷一
+  '036': {layout: body, side: a, juan: 卷一, leaf: 一}
+  '037': {layout: body, side: b, juan: 卷一, leaf: 一}
+  '038': {layout: body, side: a, juan: 卷一, leaf: 二}
+  '039': {layout: body, side: b, juan: 卷一, leaf: 二}
+  '040': {layout: body, side: a, juan: 卷一, leaf: 三}
+  '041': {layout: body, side: b, juan: 卷一, leaf: 三}
+  '042': {layout: body, side: a, juan: 卷一, leaf: 四}
+  '043': {layout: body, side: b, juan: 卷一, leaf: 四}
+  '044': {layout: body, side: a, juan: 卷一, leaf: 五}
+  '045': {layout: body, side: b, juan: 卷一, leaf: 五}
+  '046': {layout: body, side: a, juan: 卷一, leaf: 六}
+  '047': {layout: body, side: b, juan: 卷一, leaf: 六}
+  '048': {layout: body, side: a, juan: 卷一, leaf: 七}
+  '049': {layout: body, side: b, juan: 卷一, leaf: 七}
+  '050': {layout: body, side: a, juan: 卷一, leaf: 八}
+  '051': {layout: body, side: b, juan: 卷一, leaf: 八}
+  '052': {layout: body, side: a, juan: 卷一, leaf: 九}
+  '053': {layout: body, side: b, juan: 卷一, leaf: 九}
+  '054': {layout: body, side: a, juan: 卷一, leaf: 十}
+  '055': {layout: body, side: b, juan: 卷一, leaf: 十}
+  '056': {layout: body, side: a, juan: 卷一, leaf: 十一}
+  '057': {layout: body, side: b, juan: 卷一, leaf: 十一}
+  '058': {layout: body, side: a, juan: 卷一, leaf: 十二}
+  '059': {layout: body, side: b, juan: 卷一, leaf: 十二}
+  '060': {layout: body, side: a, juan: 卷一, leaf: 十三}
+  '061': {layout: body, side: b, juan: 卷一, leaf: 十三}
+  '062': {layout: body, side: a, juan: 卷一, leaf: 十四}
+  '063': {layout: body, side: b, juan: 卷一, leaf: 十四}
+  '064': {layout: body, side: a, juan: 卷一, leaf: 十五}
+  '065': {layout: body, side: b, juan: 卷一, leaf: 十五}
+  '066': {layout: body, side: a, juan: 卷一, leaf: 十六}
+  '067': {layout: body, side: b, juan: 卷一, leaf: 十六}
+  '068': {layout: body, side: a, juan: 卷一, leaf: 十七}
+  '069': {layout: body, side: b, juan: 卷一, leaf: 十七}
+  '070': {layout: body, side: a, juan: 卷一, leaf: 十八}
+  '071': {layout: body, side: b, juan: 卷一, leaf: 十八}
+  '072': {layout: body, side: a, juan: 卷一, leaf: 十九}
+  '073': {layout: body, side: b, juan: 卷一, leaf: 十九}
+  '074': {layout: body, side: a, juan: 卷一, leaf: 二十}
+  '075': {layout: body, side: b, juan: 卷一, leaf: 二十}
+  '076': {layout: body, side: a, juan: 卷一, leaf: 二十一}
+  '077': {layout: body, side: b, juan: 卷一, leaf: 二十一}
+  '078': {layout: body, side: a, juan: 卷一, leaf: 二十二}
+  '079': {layout: body, side: b, juan: 卷一, leaf: 二十二}
+  '080': {layout: body, side: a, juan: 卷一, leaf: 二十三}
+  '081': {layout: body, side: b, juan: 卷一, leaf: 二十三}
+  '082': {layout: body, side: a, juan: 卷一, leaf: 二十四}
+  '083': {layout: body, side: b, juan: 卷一, leaf: 二十四}
+  '084': {layout: body, side: a, juan: 卷一, leaf: 二十五}
+  '085': {layout: body, side: b, juan: 卷一, leaf: 二十五}
+  '086': {layout: body, side: a, juan: 卷一, leaf: 二十六}
+  '087': {layout: body, side: b, juan: 卷一, leaf: 二十六}
+  '088': {layout: body, side: a, juan: 卷一, leaf: 二十七}
+  '089': {layout: body, side: b, juan: 卷一, leaf: 二十七}
+  '090': {layout: body, side: a, juan: 卷一, leaf: 二十八}
+  '091': {layout: body, side: b, juan: 卷一, leaf: 二十八}
+  '092': {layout: body, side: a, juan: 卷一, leaf: 二十九}
+  '093': {layout: body, side: b, juan: 卷一, leaf: 二十九}
+  '094': {layout: body, side: a, juan: 卷一, leaf: 三十}
+
+# PDF outline: scan -> [[level, title], ...] placed before that page
+bookmarks:
+  '002': [[0, 閒情偶寄序（余懷）]]
+  '017': [[0, 閒情偶寄總目]]
+  '022': [[0, 凡例七則]]
+  '034': [[0, 卷一目次]]
+  '036': [[0, 卷一　詞曲部], [1, 結構第一]]
+  '076': [[1, 詞采第二]]

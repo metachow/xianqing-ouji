@@ -1,0 +1,22 @@
+# LaTeX output and generated pages
+*.aux
+*.log
+*.out
+build/
+pages/
+__pycache__/
+
+# large or derived: regenerate with the tools (see README)
+# scans: tools/fetch_pku.py, tools/fetch_harvard.py; fonts: tools/fetch_fonts.py;
+# plates: tools/make_plates.py; Wikisource text (CC BY-SA 4.0): tools/fetch_wikisource.py
+scans/
+fonts/
+figures/plates/
+text/wikisource/
+
+# working files: reading copies, checks, backups
+work/*
+!work/TRANSCRIPTION.md
+!work/PROOFREADING.md
+!work/notes/
+!work/review/
