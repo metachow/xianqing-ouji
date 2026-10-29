@@ -34,8 +34,8 @@ layouts:
   body:               # 卷一 ff.: 部 heading at row 0, section heading at row 1, text at row 3
     cols: 9
     rows: 20
-    font: song
-    size: 0.80
+    font: songT       # condensed (tall, narrow) like the Kangxi 宋體
+    size: 0.90
     indent: 3
     note_pitch: 1.0   # 066: six small characters fill six rows
     note_size: 0.70
