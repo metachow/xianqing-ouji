@@ -152,6 +152,59 @@ pages:
   '093': {layout: body, side: b, juan: 卷一, leaf: 二十九}
   '094': {layout: body, side: a, juan: 卷一, leaf: 三十}
 
+  # 卷二 (base: Harvard copy, keys = Harvard opening + half; text/juan02/)
+  'h052R': {layout: blank, side: b, juan: 卷一, leaf: 三十}   # back of 卷一's last leaf
+  'h052L': {layout: toc, side: a, juan: 卷二目次, leaf: 一, text: juan02}
+  'h053R': {layout: toc, side: b, juan: 卷二目次, leaf: 一, text: juan02}
+  'h053L': {layout: body, side: a, juan: 卷二, leaf: 一, text: juan02}
+  'h054R': {layout: body, side: b, juan: 卷二, leaf: 一, text: juan02}
+  'h054L': {layout: body, side: a, juan: 卷二, leaf: 二, text: juan02}
+  'h055R': {layout: body, side: b, juan: 卷二, leaf: 二, text: juan02}
+  'h055L': {layout: body, side: a, juan: 卷二, leaf: 三, text: juan02}
+  'h056R': {layout: body, side: b, juan: 卷二, leaf: 三, text: juan02}
+  'h056L': {layout: body, side: a, juan: 卷二, leaf: 四, text: juan02}
+  'h057R': {layout: body, side: b, juan: 卷二, leaf: 四, text: juan02}
+  'h057L': {layout: body, side: a, juan: 卷二, leaf: 五, text: juan02}
+  'h058R': {layout: body, side: b, juan: 卷二, leaf: 五, text: juan02}
+  'h058L': {layout: body, side: a, juan: 卷二, leaf: 六, text: juan02}
+  'h059R': {layout: body, side: b, juan: 卷二, leaf: 六, text: juan02}
+  'h059L': {layout: body, side: a, juan: 卷二, leaf: 七, text: juan02}
+  'h060R': {layout: body, side: b, juan: 卷二, leaf: 七, text: juan02}
+  'h060L': {layout: body, side: a, juan: 卷二, leaf: 八, text: juan02}
+  'h061R': {layout: body, side: b, juan: 卷二, leaf: 八, text: juan02}
+  'h061L': {layout: body, side: a, juan: 卷二, leaf: 九, text: juan02}
+  'h062R': {layout: body, side: b, juan: 卷二, leaf: 九, text: juan02}
+  'h062L': {layout: body, side: a, juan: 卷二, leaf: 十, text: juan02}
+  'h063R': {layout: body, side: b, juan: 卷二, leaf: 十, text: juan02}
+  'h063L': {layout: body, side: a, juan: 卷二, leaf: 十一, text: juan02}
+  'h064R': {layout: body, side: b, juan: 卷二, leaf: 十一, text: juan02}
+  'h064L': {layout: body, side: a, juan: 卷二, leaf: 十二, text: juan02}
+  'h065R': {layout: body, side: b, juan: 卷二, leaf: 十二, text: juan02}
+  'h065L': {layout: body, side: a, juan: 卷二, leaf: 十三, text: juan02}
+  'h066R': {layout: body, side: b, juan: 卷二, leaf: 十三, text: juan02}
+  'h066L': {layout: body, side: a, juan: 卷二, leaf: 十四, text: juan02}
+  'h067R': {layout: body, side: b, juan: 卷二, leaf: 十四, text: juan02}
+  'h067L': {layout: body, side: a, juan: 卷二, leaf: 十五, text: juan02}
+  'h068R': {layout: body, side: b, juan: 卷二, leaf: 十五, text: juan02}
+  'h068L': {layout: body, side: a, juan: 卷二, leaf: 十六, text: juan02}
+  'h069R': {layout: body, side: b, juan: 卷二, leaf: 十六, text: juan02}
+  'h069L': {layout: body, side: a, juan: 卷二, leaf: 十七, text: juan02}
+  'h070R': {layout: body, side: b, juan: 卷二, leaf: 十七, text: juan02}
+  'h070L': {layout: body, side: a, juan: 卷二, leaf: 十八, text: juan02}
+  'h071R': {layout: body, side: b, juan: 卷二, leaf: 十八, text: juan02}
+  'h071L': {layout: body, side: a, juan: 卷二, leaf: 十九, text: juan02}
+  'h072R': {layout: body, side: b, juan: 卷二, leaf: 十九, text: juan02}
+  'h072L': {layout: body, side: a, juan: 卷二, leaf: 二十, text: juan02}
+  'h073R': {layout: body, side: b, juan: 卷二, leaf: 二十, text: juan02}
+  'h073L': {layout: body, side: a, juan: 卷二, leaf: 二十一, text: juan02}
+  'h074R': {layout: body, side: b, juan: 卷二, leaf: 二十一, text: juan02}
+  'h074L': {layout: body, side: a, juan: 卷二, leaf: 二十二, text: juan02}
+  'h075R': {layout: body, side: b, juan: 卷二, leaf: 二十二, text: juan02}
+  'h075L': {layout: body, side: a, juan: 卷二, leaf: 二十三, text: juan02}
+  'h076R': {layout: body, side: b, juan: 卷二, leaf: 二十三, text: juan02}
+  'h076L': {layout: body, side: a, juan: 卷二, leaf: 二十四, text: juan02}
+  'h077R': {layout: body, side: b, juan: 卷二, leaf: 二十四, text: juan02}
+  'h077L': {layout: body, side: a, juan: 卷二, leaf: 二十五, text: juan02}
 # PDF outline: scan -> [[level, title], ...] placed before that page
 bookmarks:
   '002': [[0, 閒情偶寄序（余懷）]]
@@ -160,3 +213,5 @@ bookmarks:
   '034': [[0, 卷一目次]]
   '036': [[0, 卷一　詞曲部], [1, 結構第一]]
   '076': [[1, 詞采第二]]
+  'h052L': [[0, 卷二目次]]
+  'h053L': [[0, 卷二　詞曲部], [1, 音律第三]]

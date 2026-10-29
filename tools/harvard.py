@@ -20,7 +20,11 @@ ENDS = [16, 21, 33, 35, 94]
 
 
 def locate(scan):
-    """(Harvard opening, 'L' or 'R') for a PKU scan number."""
+    """(Harvard opening, 'L' or 'R') for a page key: a PKU vol.-1 scan number (int or '043'),
+    or a Harvard half-leaf key 'h053L' (used from 卷二 on, where Harvard is the base)."""
+    if isinstance(scan, str) and scan.startswith('h'):
+        return int(scan[1:-1]), scan[-1]
+    scan = int(scan)
     for (first, open1a), last in zip(SECTIONS, ENDS):
         if first <= scan <= last:
             i = scan - first
@@ -39,7 +43,7 @@ def half(scan, overlap=60):
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
-    ap.add_argument('scan', type=int)
+    ap.add_argument('scan')
     ap.add_argument('out')
     ap.add_argument('box', nargs='*', type=int)
     ap.add_argument('--scale', type=float, default=0.5)

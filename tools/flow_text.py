@@ -27,6 +27,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / 'tools'))
 import gen_pages  # noqa: E402
+import yaml
 
 CJK = re.compile(r'[㐀-鿿\U00020000-\U0002ffff]')
 
@@ -157,7 +158,8 @@ def main():
     a = ap.parse_args()
     skel = json.loads(Path(a.skeleton).read_text(encoding='utf-8'))
     p0, p1 = a.pages.split('-')
-    pages = [f'{s:03d}' for s in range(int(p0), int(p1) + 1)]
+    cfg = yaml.safe_load((ROOT / 'text' / 'layout.yaml').read_text(encoding='utf-8'))
+    pages = gen_pages.page_range(a.pages, cfg)
     skip = {k: int(v) for k, v in (x.split(':') for x in a.skip.split(',') if x)}
     rules = dict(r for r in (x.strip() for x in a.rules.split(',')) if len(r) == 2)
     blks = [(k, ''.join(rules.get(ch, ch) for ch in t)) for k, t in blocks(a.wiki)]

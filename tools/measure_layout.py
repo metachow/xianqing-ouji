@@ -34,7 +34,7 @@ def grid(scan, cfg):
     """(ink mask, top, px, py, xr, ncol, nrow) with columns snapped to the rules."""
     info = cfg['pages'][scan]
     lay = cfg['layouts'][info['layout']]
-    a = np.asarray(harvard.half(int(scan)).convert('L'))
+    a = np.asarray(harvard.half(scan).convert('L'))
     ink = a < em.INK
     ncol, nrow = lay['cols'], lay['rows']
     top, bot, xl, xr = em.find_frame(ink, info['side'], ncol)
@@ -117,7 +117,7 @@ def measure(scan, cfg):
 def truth(scan, cfg):
     """Occupied rows per column from the transcription (main text only)."""
     lay = cfg['layouts'][cfg['pages'][scan]['layout']]
-    page = gen_pages.parse_page(ROOT / 'text' / 'v1' / f'{scan}.txt')
+    page = gen_pages.parse_page(gen_pages.text_path(scan, cfg['pages'][scan]))
     out = []
     for start, items in page.columns:
         r = float(lay['indent'] if start is None else start)
@@ -143,14 +143,14 @@ def truth(scan, cfg):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('scans', nargs='+', type=int)
+    ap.add_argument('scans', nargs='+', help='page keys or one range like h053L-h077L')
     ap.add_argument('--eval', action='store_true')
     ap.add_argument('--out')
     a = ap.parse_args()
     cfg = yaml.safe_load((ROOT / 'text' / 'layout.yaml').read_text(encoding='utf-8'))
     skel, cells_ok, cells_n, cols_ok, cols_n = {}, 0, 0, 0, 0
-    for s in a.scans:
-        scan = f'{s:03d}'
+    keys = gen_pages.page_range(a.scans[0], cfg) if len(a.scans) == 1 and '-' in a.scans[0][1:] else [gen_pages.page_key(s) for s in a.scans]
+    for scan in keys:
         cols = measure(scan, cfg)
         skel[scan] = {'rows': measure.rows, 'cols': [{'start': c['start'], 'end': c['end'], 'count': c['count'], 'occ': [bool(o) for o in c['occ']]} for c in cols]}
         if a.eval:

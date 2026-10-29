@@ -22,7 +22,7 @@ import gen_pages  # noqa: E402
 import harvard    # noqa: E402
 
 ap = argparse.ArgumentParser()
-ap.add_argument('scans', nargs='+', type=int)
+ap.add_argument('scans', nargs='+')
 ap.add_argument('--dpi', type=int, default=100)
 ap.add_argument('--src', default='text/v1', help='transcription directory (default text/v1)')
 ap.add_argument('--harvard', action='store_true', help='compare with the Harvard colour copy (grey)')
@@ -35,10 +35,10 @@ failed = False
 (ROOT / 'work' / 'check').mkdir(parents=True, exist_ok=True)
 
 for s in a.scans:
-    scan = f'{s:03d}'
+    scan = gen_pages.page_key(s)
     info = cfg['pages'][scan]
     lay = cfg['layouts'][info['layout']]
-    src = ROOT / a.src / f'{scan}.txt'
+    src = gen_pages.text_path(scan, info) if a.src == 'text/v1' else ROOT / a.src / f'{scan}.txt'
     try:
         page = gen_pages.parse_page(src)
         tex = gen_pages.render(scan, info, lay, page, variants, [])
@@ -87,11 +87,11 @@ for s in a.scans:
     subprocess.run(['pdftoppm', '-r', str(a.dpi), '-gray', '-png', '-singlefile',
                     str(d / 'page.pdf'), str(d / 'page')], check=True)
     ed = Image.open(d / 'page.png').convert('L')
-    if a.harvard:   # the Harvard half-leaf, scaled to the edition page's height
-        sc = harvard.half(s).convert('L')
+    if a.harvard or scan.startswith('h'):   # the Harvard half-leaf, scaled to the edition page's height
+        sc = harvard.half(scan).convert('L')
         sc = sc.resize((round(sc.width * ed.height / sc.height), ed.height), Image.LANCZOS)
     else:
-        sc = Image.open(ROOT / 'scans' / 'v1' / f'02097225.cn_{s:04d}.png').convert('L')
+        sc = Image.open(ROOT / 'scans' / 'v1' / f'02097225.cn_{int(scan):04d}.png').convert('L')
         sc = sc.resize((round(sc.width * a.dpi / 300), round(sc.height * a.dpi / 300)), Image.LANCZOS)
     sheet = Image.new('L', (sc.width + ed.width + 12, max(sc.height, ed.height)), 150)
     sheet.paste(sc, (0, 0))

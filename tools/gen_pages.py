@@ -44,6 +44,25 @@ BANXIN = dict(size=5.6, row=6.6)
 MARKS = {'。': 'circle', '、': 'tick', '•': 'dot'}
 
 
+def page_key(s):
+    """'43' / 43 -> '043' (PKU vol.-1 scan); 'h053L' stays (Harvard half-leaf, 卷二 on)."""
+    s = str(s)
+    return s if s.startswith('h') else f'{int(s):03d}'
+
+
+def text_path(scan, info):
+    """Transcription file of a page: text/<dir>/<key>.txt, dir from layout (default v1)."""
+    return TEXT / info.get('text', 'v1') / f'{scan}.txt'
+
+
+def page_range(spec, cfg):
+    """'036-094' or 'h052L-h077L' -> the page keys of layout.yaml in that range, in order."""
+    a, b = spec.split('-') if '-' in spec[1:] else (spec, spec)
+    keys = list(cfg['pages'])
+    a, b = page_key(a), page_key(b)
+    return keys[keys.index(a): keys.index(b) + 1]
+
+
 def load_variants():
     table = {}
     for line in (TEXT / 'variants.tsv').read_text(encoding='utf-8').splitlines():
@@ -330,6 +349,20 @@ def render(scan, info, lay, page, variants, applied):
                    f'{{\\special{{pdf:ann width {pitch_x:.2f}mm height 0pt depth {FRAME_H:.2f}mm '
                    f'<</Type/Annot/Subtype/Link/Border[0 0 0]/A<</S/GoTo/D(jj-{k})>>>>}}}};\n')
 
+    # 目次 / 總目: each entry found as a heading in the text links to that page
+    if lay is not None and info.get('layout') == 'toc':
+        for c, (_, items) in enumerate(page.columns):
+            title = column_title(items, variants)
+            target = HEADINGS.get(title)
+            if not target and len(title) >= 3:      # 目次 and text may differ in one character
+                near = [k for t, k in HEADINGS.items()
+                        if len(t) == len(title) and sum(a != b for a, b in zip(t, title)) == 1]
+                target = near[0] if len(near) == 1 else None
+            if target and target != scan:
+                out.append(f'\\node[inner sep=0pt] at ({col_x(c) - pitch_x / 2:.2f}mm,{top:.2f}mm) '
+                           f'{{\\special{{pdf:ann width {pitch_x:.2f}mm height 0pt depth {FRAME_H:.2f}mm '
+                           f'<</Type/Annot/Subtype/Link/Border[0 0 0]/A<</S/GoTo/D(scan-{target})>>>>}}}};\n')
+
     # 眉批 above the frame
     for k, parts in page.notes:
         rows = max(len(p) for p in parts)
@@ -376,12 +409,46 @@ def spread_listing(cfg):
     return ''.join(out)
 
 
+HEADINGS = {}   # heading text -> page key where it stands in the text (filled by main)
+
+
+def column_title(items, variants):
+    """The leading run of characters of a column (an entry up to its first empty cell or
+    note), in standard characters: '結構第一　計七款' -> '結構第一'."""
+    s = ''
+    for it in items:
+        if it[0] != 'c':
+            if s:
+                break
+            continue
+        s += variants.get(it[1], it[1])
+    return s
+
+
+def heading_index(cfg, variants):
+    """Short columns of the body pages (部/節/條目 titles) -> first page they stand on."""
+    idx = {}
+    for key, info in cfg['pages'].items():
+        if info['layout'] != 'body':
+            continue
+        path = text_path(key, info)
+        if not path.exists():
+            continue
+        for _, items in parse_page(path).columns:
+            t = column_title(items, variants)
+            n = sum(1 for it in items if it[0] == 'c')
+            if 2 <= len(t) <= 8 and len(t) == n:
+                idx.setdefault(t, key)
+    return idx
+
+
 def main():
-    global SHOW_MARKS
+    global SHOW_MARKS, HEADINGS
     cfg = yaml.safe_load((TEXT / 'layout.yaml').read_text(encoding='utf-8'))
     SHOW_MARKS = cfg.get('show_marks', True)
     variants = load_variants()
-    wanted = {f'{int(s):03d}' for s in sys.argv[1:]}
+    HEADINGS = heading_index(cfg, variants)
+    wanted = {page_key(s) for s in sys.argv[1:]}
     OUT.mkdir(exist_ok=True)
     applied, listing, missing = [], [], []
     for scan in cfg['pages']:           # the order of layout.yaml (= binding order)
@@ -397,7 +464,7 @@ def main():
         if info['layout'] in special:
             (OUT / f'{scan}.tex').write_text(special[info['layout']], encoding='utf-8')
             continue
-        src = TEXT / 'v1' / f'{scan}.txt'
+        src = text_path(scan, info)
         if src.exists():
             page = parse_page(src)
         else:
