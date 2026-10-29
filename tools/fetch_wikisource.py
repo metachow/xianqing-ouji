@@ -11,7 +11,8 @@ import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-PAGES = ['序', '詞曲部', '詞曲部/結構第一', '詞曲部/詞采第二', '詞曲部/音律第三']
+PAGES = ['序', '詞曲部', '詞曲部/結構第一', '詞曲部/詞采第二', '詞曲部/音律第三',
+         '詞曲部/賓白第四', '詞曲部/科諢第五', '詞曲部/格局第六']   # 填詞餘論 is inside 格局第六
 API = 'https://zh.wikisource.org/w/api.php?action=parse&prop=wikitext&format=json&formatversion=2&page='
 
 out = ROOT / 'text' / 'wikisource'

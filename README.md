@@ -36,14 +36,21 @@ and column for column like the original, with a modern apparatus. Classical Chin
 後續各冊之掃描均已可得：北大本 Internet Archive `02097226.cn`–`02097232.cn`（黑白），
 哈佛本同一 IIIF 清單之第 2–8 冊（彩色，`tools/fetch_harvard.py`）。兩本分冊不同，按版心卷次葉次對應。
 
-## 兩種 PDF（見 Releases）
+## PDF（見 Releases）
 
-- **對開閱讀本** `xianqing-ouji_juan01-02_spread.pdf`：一頁一開（右為前葉下半，左為後葉上半，版心在兩外側），
+按哈佛本分冊，每冊兩種：
+
+- **對開閱讀本** `xianqing-ouji_ce<冊>_<卷>_spread.pdf`：一頁一開（右為前葉下半，左為後葉上半，版心在兩外側），
   如翻閱原書；任何閱讀器皆正確。
-- **單頁本** `xianqing-ouji_juan01-02_single.pdf`：一頁一半葉，供列印與手機閱讀。
+- **單頁本** `xianqing-ouji_ce<冊>_<卷>_single.pdf`：一頁一半葉，供列印與手機閱讀。
 
-兩者皆有書籤，書末校記與正文雙向連結。檔名按卷：`juan01-02` 為卷首與卷一、卷二，以後依次為 `juan01-03`、`juan01-04`（累積成書）
-之類（兩藏本分冊不同，故以卷不以冊）；Release 版本號另計（v0.1 …）。
+| 冊 | 卷 | 檔名 |
+|---|---|---|
+| 一 | 卷首、卷一、卷二 | `xianqing-ouji_ce1_juan01-02_*.pdf` |
+| 二 | 卷三（卷四待做） | `xianqing-ouji_ce2_juan03_*.pdf` |
+
+每冊自有書衣、編輯說明、校記與封底；書籤、目次與校記之連結限於本冊。檔名之 `ce` 為冊、`juan` 為卷；
+Release 版本號另計（v0.1 …）。
 
 ## 底本與做法
 
@@ -78,13 +85,11 @@ and column for column like the original, with a modern apparatus. Classical Chin
 ```
 python tools/fetch_fonts.py          # Noto Serif TC、全字庫正楷體、正宋體 → fonts/
 python tools/fetch_pku.py            # 北大本掃描 → scans/v1/（校對、對照用）
-python tools/fetch_harvard.py 1 78   # 哈佛本第一冊 → scans/harvard/（覆核、扉葉、圈點辨識用）
+python tools/fetch_harvard.py 1 143  # 哈佛本第一、二冊 → scans/harvard/（覆核、扉葉、圈點辨識用）
 python tools/fetch_wikisource.py     # 維基文庫本 → text/wikisource/
-python tools/wiki_punct.py           # 卷一句讀層 → text/marks_wikisource.tsv（已在庫中）
-python tools/gen_pages.py            # text/ → pages/（每半葉一個 TikZ 頁）
-python tools/gen_appendix.py         # 編輯說明、異體字統一表、校記 → pages/appendix.tex
-xelatex -output-directory=build main_spread   # 對開本（兩遍）
-xelatex -output-directory=build main          # 單頁本（兩遍）
+python tools/wiki_punct.py           # 各卷句讀層 → text/marks_wikisource.tsv（已在庫中）
+python tools/build.py --ce 1         # 只編第一冊（gen_pages、gen_appendix、XeLaTeX 兩遍 × 兩種版式）
+python tools/build.py                # 全部各冊
 ```
 
 建書只需字體與 `text/`、`front/`、`figures/`；掃描僅供校對與重製圖像。

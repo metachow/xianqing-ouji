@@ -70,6 +70,8 @@
 % original (variant) glyphs in the 異體字統一表: Noto lacks several; 全字庫 has them all
 \newfontfamily\twsung{TW-Sung.ttf}[Path=fonts/]
 \newcommand\orig[1]{{\twsung #1}}
+% reference to the variant table: a link in the volume that has it, words elsewhere
+\newcommand\varref{\ifdefined\novartable 第一冊「異體字統一表」\else\apxref{apx-variants}{「異體字統一表」}\fi}
 \newcommand\apxref[2]{\hyperlink{#1}{\textcolor{linkcol}{#2}}}
 \definecolor{linkcol}{RGB}{150,30,20}
 \newenvironment{vartable}{\par\medskip\centering

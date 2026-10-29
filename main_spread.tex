@@ -1,14 +1,16 @@
-% 閒情偶寄 re-typeset edition, volume 1 -- reading edition in openings (one PDF page =
-% one opening, as the Harvard scans show the book). Build from the project root:
-%   python tools/gen_pages.py && python tools/gen_appendix.py && xelatex -output-directory=build main_spread
+% 閒情偶寄 re-typeset edition -- one volume (冊), reading edition in openings (one PDF
+% page = one opening, as the Harvard scans show the book). Build with
+%   python tools/build.py --ce N          (or: xelatex "\def\edce{N}\input{main_spread}")
 \documentclass{article}
 \input{preamble}
+\providecommand\edce{1}
+\input{pages/vol_\edce}
 \hypersetup{pdfpagelayout=SinglePage,pdfpagemode=UseOutlines,
-  pdftitle={閒情偶寄　卷首・卷一},pdfauthor={李漁}}
+  pdftitle={閒情偶寄　第\edslip 冊（\eddesc）},pdfauthor={李漁}}
 
 \begin{document}
-\input{pages/list_spread}
+\input{pages/list_spread_\edce}
 \setpaper{160.9mm}
-\input{pages/appendix}
+\input{pages/appendix_\edce}
 \clearpage\null\input{front/back}
 \end{document}

@@ -1,12 +1,14 @@
-% 閒情偶寄 re-typeset edition, volume 1. Build from the project root:
-%   python tools/gen_pages.py && python tools/gen_appendix.py && xelatex -output-directory=build main
+% 閒情偶寄 re-typeset edition -- one volume (冊), single pages (print). Build with
+%   python tools/build.py --ce N          (or: xelatex "\def\edce{N}\input{main}")
 \documentclass{article}
 \input{preamble}
+\providecommand\edce{1}
+\input{pages/vol_\edce}
 \hypersetup{pdfdirection=R2L,pdfpagelayout=TwoPageLeft,pdfpagemode=UseOutlines,
-  pdftitle={閒情偶寄　卷首・卷一},pdfauthor={李漁}}
+  pdftitle={閒情偶寄　第\edslip 冊（\eddesc）},pdfauthor={李漁}}
 
 \begin{document}
-\input{pages/list}
-\input{pages/appendix}
+\input{pages/list_\edce}
+\input{pages/appendix_\edce}
 \clearpage\null\input{front/back}
 \end{document}

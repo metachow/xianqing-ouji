@@ -7,6 +7,12 @@
 #   tools/wiki_punct.py). The transcription keeps its own (unverified) marks for 卷一 all the same.
 show_marks: true
 
+# Volumes (冊), as in the Harvard copy: each is built on its own (tools/build.py --ce N).
+# start = first page key; slip = 冊 number on the cover label; desc = its contents; name = file-name part.
+volumes:
+  - {ce: 1, start: '001', slip: 一, desc: 卷首至卷二, name: juan01-02}
+  - {ce: 2, start: 'ce2', slip: 二, desc: 卷三, name: juan03}
+
 layouts:
   preface:            # 余懷序, written-out script: 5 columns of 12
     cols: 5
@@ -206,6 +212,68 @@ pages:
   'h076L': {layout: body, side: a, juan: 卷二, leaf: 二十四, text: juan02}
   'h077R': {layout: body, side: b, juan: 卷二, leaf: 二十四, text: juan02}
   'h077L': {layout: body, side: a, juan: 卷二, leaf: 二十五, text: juan02}
+  # 卷三 (Harvard vol. 2: opening 79 = its cover, 80R = inside cover with the library label; text/juan03/)
+  'h077b': {layout: blank, side: b, juan: 卷二, leaf: 二十五}   # back of 卷二's last leaf (not scanned)
+  'ce2': {layout: cover, side: a, juan: '', leaf: ''}      # 冊二 書衣
+  'ce2a': {layout: coverin, side: b, juan: '', leaf: ''}   # 書衣內面 (Harvard 80R, library label not reproduced)
+  'h080L': {layout: toc, side: a, juan: 卷三目次, leaf: 一, text: juan03}
+  'h081R': {layout: toc, side: b, juan: 卷三目次, leaf: 一, text: juan03}
+  'h081L': {layout: toc, side: a, juan: 卷三目次, leaf: 二, text: juan03}
+  'h082R': {layout: toc, side: b, juan: 卷三目次, leaf: 二, text: juan03}
+  'h082L': {layout: body, side: a, juan: 卷三, leaf: 一, text: juan03}
+  'h083R': {layout: body, side: b, juan: 卷三, leaf: 一, text: juan03}
+  'h083L': {layout: body, side: a, juan: 卷三, leaf: 二, text: juan03}
+  'h084R': {layout: body, side: b, juan: 卷三, leaf: 二, text: juan03}
+  'h084L': {layout: body, side: a, juan: 卷三, leaf: 三, text: juan03}
+  'h085R': {layout: body, side: b, juan: 卷三, leaf: 三, text: juan03}
+  'h085L': {layout: body, side: a, juan: 卷三, leaf: 四, text: juan03}
+  'h086R': {layout: body, side: b, juan: 卷三, leaf: 四, text: juan03}
+  'h086L': {layout: body, side: a, juan: 卷三, leaf: 五, text: juan03}
+  'h087R': {layout: body, side: b, juan: 卷三, leaf: 五, text: juan03}
+  'h087L': {layout: body, side: a, juan: 卷三, leaf: 六, text: juan03}
+  'h088R': {layout: body, side: b, juan: 卷三, leaf: 六, text: juan03}
+  'h088L': {layout: body, side: a, juan: 卷三, leaf: 七, text: juan03}
+  'h089R': {layout: body, side: b, juan: 卷三, leaf: 七, text: juan03}
+  'h089L': {layout: body, side: a, juan: 卷三, leaf: 八, text: juan03}
+  'h090R': {layout: body, side: b, juan: 卷三, leaf: 八, text: juan03}
+  'h090L': {layout: body, side: a, juan: 卷三, leaf: 九, text: juan03}
+  'h091R': {layout: body, side: b, juan: 卷三, leaf: 九, text: juan03}
+  'h091L': {layout: body, side: a, juan: 卷三, leaf: 十, text: juan03}
+  'h092R': {layout: body, side: b, juan: 卷三, leaf: 十, text: juan03}
+  'h092L': {layout: body, side: a, juan: 卷三, leaf: 十一, text: juan03}
+  'h093R': {layout: body, side: b, juan: 卷三, leaf: 十一, text: juan03}
+  'h093L': {layout: body, side: a, juan: 卷三, leaf: 十二, text: juan03}
+  'h094R': {layout: body, side: b, juan: 卷三, leaf: 十二, text: juan03}
+  'h094L': {layout: body, side: a, juan: 卷三, leaf: 十三, text: juan03}
+  'h095R': {layout: body, side: b, juan: 卷三, leaf: 十三, text: juan03}
+  'h095L': {layout: body, side: a, juan: 卷三, leaf: 十四, text: juan03}
+  'h096R': {layout: blank, side: b, juan: 卷三, leaf: 十四}   # blank back: each section starts a new leaf
+  'h096L': {layout: body, side: a, juan: 卷三, leaf: 十五, text: juan03}
+  'h097R': {layout: body, side: b, juan: 卷三, leaf: 十五, text: juan03}
+  'h097L': {layout: body, side: a, juan: 卷三, leaf: 十六, text: juan03}
+  'h098R': {layout: body, side: b, juan: 卷三, leaf: 十六, text: juan03}
+  'h098L': {layout: body, side: a, juan: 卷三, leaf: 十七, text: juan03}
+  'h099R': {layout: body, side: b, juan: 卷三, leaf: 十七, text: juan03}
+  'h099L': {layout: body, side: a, juan: 卷三, leaf: 十八, text: juan03}
+  'h100R': {layout: body, side: b, juan: 卷三, leaf: 十八, text: juan03}
+  'h100L': {layout: body, side: a, juan: 卷三, leaf: 十九, text: juan03}
+  'h101R': {layout: blank, side: b, juan: 卷三, leaf: 十九}   # blank back: each section starts a new leaf
+  'h101L': {layout: body, side: a, juan: 卷三, leaf: 二十, text: juan03}
+  'h102R': {layout: body, side: b, juan: 卷三, leaf: 二十, text: juan03}
+  'h102L': {layout: body, side: a, juan: 卷三, leaf: 二十一, text: juan03}
+  'h103R': {layout: body, side: b, juan: 卷三, leaf: 二十一, text: juan03}
+  'h103L': {layout: body, side: a, juan: 卷三, leaf: 二十二, text: juan03}
+  'h104R': {layout: body, side: b, juan: 卷三, leaf: 二十二, text: juan03}
+  'h104L': {layout: body, side: a, juan: 卷三, leaf: 二十三, text: juan03}
+  'h105R': {layout: body, side: b, juan: 卷三, leaf: 二十三, text: juan03}
+  'h105L': {layout: body, side: a, juan: 卷三, leaf: 二十四, text: juan03}
+  'h106R': {layout: body, side: b, juan: 卷三, leaf: 二十四, text: juan03}
+  'h106L': {layout: body, side: a, juan: 卷三, leaf: 二十五, text: juan03}
+  'h107R': {layout: body, side: b, juan: 卷三, leaf: 二十五, text: juan03}
+  'h107L': {layout: body, side: a, juan: 卷三, leaf: 二十六, text: juan03}
+  'h108R': {layout: body, side: b, juan: 卷三, leaf: 二十六, text: juan03}
+  'h108L': {layout: body, side: a, juan: 卷三, leaf: 二十七, text: juan03}
+  'h109R': {layout: body, side: b, juan: 卷三, leaf: 二十七, text: juan03}
 # PDF outline: scan -> [[level, title], ...] placed before that page
 bookmarks:
   '002': [[0, 閒情偶寄序（余懷）]]
@@ -216,3 +284,5 @@ bookmarks:
   '076': [[1, 詞采第二]]
   'h052L': [[0, 卷二目次]]
   'h053L': [[0, 卷二　詞曲部], [1, 音律第三]]
+  'h080L': [[0, 卷三目次]]
+  'h082L': [[0, 卷三　詞曲部], [1, 賓白第四]]

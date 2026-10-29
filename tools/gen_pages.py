@@ -359,7 +359,7 @@ def render(scan, info, lay, page, variants, applied):
                 near = [k for t, k in HEADINGS.items()
                         if len(t) == len(title) and sum(a != b for a, b in zip(t, title)) == 1]
                 target = near[0] if len(near) == 1 else None
-            if target and target != scan:
+            if target and target != scan and VOL_OF.get(target) == VOL_OF.get(scan):   # same PDF only
                 out.append(f'\\node[inner sep=0pt] at ({col_x(c) - pitch_x / 2:.2f}mm,{top:.2f}mm) '
                            f'{{\\special{{pdf:ann width {pitch_x:.2f}mm height 0pt depth {FRAME_H:.2f}mm '
                            f'<</Type/Annot/Subtype/Link/Border[0 0 0]/A<</S/GoTo/D(scan-{target})>>>>}}}};\n')
@@ -381,11 +381,19 @@ def render(scan, info, lay, page, variants, applied):
     return ''.join(out)
 
 
-def spread_listing(cfg):
+def volumes(cfg):
+    """[(volume dict, [page keys])] in layout order; a volume runs to the next one's start."""
+    keys = list(cfg['pages'])
+    vols = cfg.get('volumes') or [{'ce': 1, 'start': keys[0], 'slip': '一', 'desc': '', 'name': 'all'}]
+    starts = [keys.index(v['start']) for v in vols] + [len(keys)]
+    return [(v, keys[starts[i]:starts[i + 1]]) for i, v in enumerate(vols)]
+
+
+def spread_listing(cfg, pages=None):
     """\\input list of openings for main_spread.tex: the cover alone, then pairs of a b side
     (right half) and the following a side (left half); a side without a partner gets an
     empty half. Bookmarks go before the opening that holds their page."""
-    pages = list(cfg['pages'])          # the order of layout.yaml
+    pages = list(pages or cfg['pages'])     # the order of layout.yaml
     marks = cfg.get('bookmarks', {})
     out, i = [], 0
 
@@ -411,6 +419,7 @@ def spread_listing(cfg):
 
 
 HEADINGS = {}   # heading text -> page key where it stands in the text (filled by main)
+VOL_OF = {}     # page key -> volume number (filled by main); links only within one volume's PDF
 
 
 def column_title(items, variants):
@@ -444,11 +453,12 @@ def heading_index(cfg, variants):
 
 
 def main():
-    global SHOW_MARKS, HEADINGS
+    global SHOW_MARKS, HEADINGS, VOL_OF
     cfg = yaml.safe_load((TEXT / 'layout.yaml').read_text(encoding='utf-8'))
     SHOW_MARKS = cfg.get('show_marks', True)
     variants = load_variants()
     HEADINGS = heading_index(cfg, variants)
+    VOL_OF = {k: v['ce'] for v, keys in volumes(cfg) for k in keys}
     wanted = {page_key(s) for s in sys.argv[1:]}
     OUT.mkdir(exist_ok=True)
     applied, listing, missing = [], [], []
@@ -474,8 +484,16 @@ def main():
         tex = render(scan, info, cfg['layouts'][info['layout']], page, variants, applied)
         (OUT / f'{scan}.tex').write_text(tex, encoding='utf-8')
     if not wanted:
-        (OUT / 'list.tex').write_text(''.join(listing), encoding='utf-8')
-        (OUT / 'list_spread.tex').write_text(spread_listing(cfg), encoding='utf-8')
+        # per volume: page list (single pages), opening list, and its macros
+        bms = cfg.get('bookmarks', {})
+        for vol, keys in volumes(cfg):
+            ce = vol['ce']
+            single = ''.join(''.join(f'\\edbookmark{{{lv}}}{{{t}}}\n' for lv, t in bms.get(k, []))
+                             + f'\\edpage{{{k}}}\n' for k in keys)
+            (OUT / f'list_{ce}.tex').write_text(single, encoding='utf-8')
+            (OUT / f'list_spread_{ce}.tex').write_text(spread_listing(cfg, keys), encoding='utf-8')
+            (OUT / f'vol_{ce}.tex').write_text(
+                f'\\def\\edslip{{{vol["slip"]}}}\\def\\eddesc{{{vol["desc"]}}}\n', encoding='utf-8')
         with open(ROOT / 'work' / 'variants_applied.tsv', 'w', encoding='utf-8') as f:
             f.write('scan\tcolumn\trow\toriginal\tstandard\n')
             for row in applied:

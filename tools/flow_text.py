@@ -159,7 +159,8 @@ def main():
     skel = json.loads(Path(a.skeleton).read_text(encoding='utf-8'))
     p0, p1 = a.pages.split('-')
     cfg = yaml.safe_load((ROOT / 'text' / 'layout.yaml').read_text(encoding='utf-8'))
-    pages = gen_pages.page_range(a.pages, cfg)
+    pages = [k for k in gen_pages.page_range(a.pages, cfg)
+             if cfg['pages'][k]['layout'] == 'body']   # blank sides (a section ending on an a side) are skipped
     skip = {k: int(v) for k, v in (x.split(':') for x in a.skip.split(',') if x)}
     rules = dict(r for r in (x.strip() for x in a.rules.split(',')) if len(r) == 2)
     blks = [(k, ''.join(rules.get(ch, ch) for ch in t)) for k, t in blocks(a.wiki)]
