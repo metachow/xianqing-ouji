@@ -37,11 +37,12 @@ and column for column like the original, with a modern apparatus. Classical Chin
 
 ## 兩種 PDF（見 Releases）
 
-- **對開閱讀本** `xianqing-ouji_v1_spread.pdf`：一頁一開（右為前葉下半，左為後葉上半，版心在兩外側），
+- **對開閱讀本** `xianqing-ouji_juan01_spread.pdf`：一頁一開（右為前葉下半，左為後葉上半，版心在兩外側），
   如翻閱原書；任何閱讀器皆正確。
-- **單頁本** `xianqing-ouji_v1_single.pdf`：一頁一半葉，供列印與手機閱讀。
+- **單頁本** `xianqing-ouji_juan01_single.pdf`：一頁一半葉，供列印與手機閱讀。
 
-兩者皆有書籤，書末校記與正文雙向連結。
+兩者皆有書籤，書末校記與正文雙向連結。檔名按卷：`juan01` 為卷首與卷一，以後依次為 `juan02`、`juan02-03`
+之類（兩藏本分冊不同，故以卷不以冊）；Release 版本號另計（v0.1 …）。
 
 ## 底本與做法
 
@@ -90,7 +91,8 @@ xelatex -output-directory=build main          # 單頁本（兩遍）
 ## 目錄
 
 ```
-text/v1/NNN.txt        錄文（一行＝原刻一行；圈點、密圈、割注、抬頭、眉批、版心之標記見 work/TRANSCRIPTION.md）
+text/v1/NNN.txt        錄文，v1 = 北大本第一冊（IA 02097225.cn），NNN = 其掃描號；一行＝原刻一行
+                       （圈點、密圈、割注、抬頭、眉批、版心之標記見 work/TRANSCRIPTION.md）
 text/layout.yaml       版式（行數、格數、低格）、各頁版式與次第、書籤
 text/variants.tsv      異體字 → 通行字
 text/jiaoji.yaml       校記
