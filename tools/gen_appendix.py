@@ -88,7 +88,7 @@ def appendix(cfg, keys, variants, jiaoji):
             if info['layout'] == 'title':
                 where = f'扉葉牌記\\ 第{cn(e["col"])}行'
             else:
-                where = f'{info["juan"]}{info["leaf"]}{half}\\ 第{cn(e["col"])}行'
+                where = f'{info["juan"]}第{info["leaf"]}葉{half}\\ 第{cn(e["col"])}行'   # 卷三十二下 would read as 卷三十二
             out.append(f'\\item[\\apxref{{scan-{e["scan"]}}}{{{where}}}]'
                        f'\\hypertarget{{jj-{k}}}{{}}{e["note"]}\n')
         out.append('\\end{jiaoji}\n')

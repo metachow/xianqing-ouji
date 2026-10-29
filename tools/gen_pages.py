@@ -20,6 +20,7 @@ Transcription format: see work/TRANSCRIPTION.md. One line per column, right to l
   #        comment
 """
 import math
+import re
 import sys
 from pathlib import Path
 import yaml
@@ -271,6 +272,7 @@ def render(scan, info, lay, page, variants, applied):
 
     # 版心: book title, section, leaf number
     label, leaf = page.banxin or (info['juan'], str(info['leaf']))
+    leaf = re.sub(r'^二十(?=.)', '廿', leaf)    # the cut writes 廿一–廿九 (but 二十, 三十)
     bxc = bx0 + BANXIN_W / 2
     y = top - 1.2 - BANXIN['row'] / 2
     for ch in '閒情偶寄':

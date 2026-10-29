@@ -56,6 +56,8 @@ def part_rows(cfg, pages, sections, variants):
     wchars, wmarks = wiki_text(sections)
     cells = []                          # (page, column, item, char) in reading order
     for key in gen_pages.page_range(pages, cfg):
+        if cfg['pages'][key]['layout'] == 'blank':
+            continue
         page = gen_pages.parse_page(gen_pages.text_path(key, cfg['pages'][key]))
         for c, (_, items) in enumerate(page.columns):
             for k, it in enumerate(items):
