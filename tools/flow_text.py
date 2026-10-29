@@ -1,6 +1,6 @@
 """Flow the Wikisource text into the measured layout of the original, column by column.
 
-usage: flow_text.py SKELETON.json SECTION.wiki [...] --pages 036-094 [--skip 036:4]
+usage: flow_text.py SKELETON.json SECTION.wiki [...] --pages 036-094 [--skip 036:4] [--empty h114L:7-9]
                     [--eval] [--write DIR]
 
 Blocks come from the wikitext: '''◎…''' section titles and '''○…''' 條目 titles are
@@ -30,32 +30,55 @@ import gen_pages  # noqa: E402
 import yaml
 
 CJK = re.compile(r'[㐀-鿿\U00020000-\U0002ffff]')
+CELL = re.compile(r'[㐀-鿿\U00020000-\U0002ffff□［］]')   # text, placeholder, frame marks
+
+
+def ncell(s):
+    """Cells taken by s: the frame marks ［ ］ take none."""
+    return len(s) - s.count('［') - s.count('］')
+
+
+def take(s, pos, n):
+    """From s[pos:], n cells with the frame marks among them (and a ］ right after) -> end index."""
+    k = pos
+    while n and k < len(s):
+        n -= s[k] not in '［］'
+        k += 1
+    while k < len(s) and s[k] == '］':
+        k += 1
+    return k
 
 
 def blocks(paths):
     out = []
     for p in paths:
         t = Path(p).read_text(encoding='utf-8')
+        t = re.sub(r'\{\{PUA\|[^}]*\}\}', '□', t)        # a character Wikisource could not encode
         t = re.sub(r'\{\{.*?\}\}', '', t, flags=re.S)
         t = re.sub(r'<[^>]+>|\[\[|\]\]', '', t)
         for line in t.splitlines():
             line = line.strip().strip('　')
             if not line:
                 continue
-            m = re.fullmatch(r"'''([◎○]?)(.+?)'''", line)
-            if m:      # ◎ section title (its 總論 follows, 低三格); ○ 條目 title (頂格 text follows)
-                out.append(('sec' if m.group(1) == '◎' else 'item', ''.join(CJK.findall(m.group(2)))))
+            m = re.fullmatch(r"\*?'''([◎○△]?)(.+?)'''", line)
+            if m:      # ◎ section title (its 總論 follows, 低三格); ○ 條目 title (頂格 text follows); △ a play
+                out.append(({'◎': 'sec', '△': 'play'}.get(m.group(1), 'item'), ''.join(CJK.findall(m.group(2)))))
             else:
-                chars = ''.join(CJK.findall(line))
+                # 〔 〕 in a play (曲牌, role, stage direction) are framed in the woodblock: ［ ］;
+                # s2t made the roles 丑 淨 into 醜 凈
+                line = re.sub(r'〔([^〕]*)〕',
+                              lambda f: '［' + f.group(1).replace('醜', '丑').replace('凈', '淨') + '］', line)
+                chars = ''.join(CELL.findall(line))
                 if chars:
                     out.append(('para', chars))
     return out
 
 
-def flow(skel, pages, blks, skip):
+def flow(skel, pages, blks, skip, empty=frozenset()):
     """-> {scan: [(start, text, flags)]} for every measured column."""
     result, bi, pos = {}, 0, 0
     width = 17          # this book: a section's 總論 is 低三格 (17 a column), 條目 text 頂格 (20)
+    play = False        # inside a play (卷四's 改本): columns break where the original breaks them
     for scan in pages:
         rows = skel[scan]['rows']
         cols = []
@@ -63,7 +86,7 @@ def flow(skel, pages, blks, skip):
             if scan in skip and c < skip[scan]:
                 cols.append((col['start'], None, []))
                 continue
-            if bi >= len(blks):
+            if bi >= len(blks) or (scan, c + 1) in empty:
                 cols.append((col['start'], '', []))
                 continue
             kind, text = blks[bi]
@@ -73,25 +96,32 @@ def flow(skel, pages, blks, skip):
             if kind == 'para' and pos == 0 and col['count'] < 1:
                 continue
             flags = []
-            if kind in ('sec', 'item'):
+            if kind in ('sec', 'item', 'play'):
                 if abs(col['count'] - len(text)) > 0:
                     flags.append('head')
-                cols.append((1 if kind == 'sec' else 2, text, flags))
+                cols.append((2 if kind == 'item' else 1, text, flags))
                 width = 17 if kind == 'sec' else 20
+                play = play or kind == 'play'
                 bi, pos = bi + 1, 0
                 continue
             cap = width          # from the text's structure, not from the (noisy) measurement
-            rest = len(text) - pos
+            if play and col['count'] <= cap - 2:
+                # a play breaks its columns where Wikisource runs on (曲 / 白, a new role):
+                # here the measured length is the better guess
+                cap = col['count']
+                flags.append('cut')
+            rest = ncell(text[pos:])
             if rest <= cap:
                 piece = text[pos:]
                 if col['count'] - rest > 1:
                     flags.append('short')
                 bi, pos = bi + 1, 0
             else:
-                piece = text[pos:pos + cap]
+                end = take(text, pos, cap)
+                piece = text[pos:end]
                 if col['count'] < cap - 1:
                     flags.append('long')
-                pos += cap
+                pos = end
             cols.append((3 if width == 17 else 0, piece, flags))
         result[scan] = cols
     return result
@@ -119,7 +149,8 @@ def write(res, out, skel):
                 lines.append('')
                 continue
             lines.append(f'^{start} {text}')
-            amb = [f'{k + 1}{ch}' for k, ch in enumerate(text) if ch in AMBIGUOUS]
+            cells = text.replace('［', '').replace('］', '')
+            amb = [f'{k + 1}{ch}' for k, ch in enumerate(cells) if ch in AMBIGUOUS or ch == '□']
             if flags or amb:
                 notes.append(f'- 行{c + 1}' + (f' **{",".join(flags)}**' if flags else '')
                              + (f' 易混字（第幾字）：{" ".join(amb)}' if amb else ''))
@@ -151,6 +182,7 @@ def main():
     ap.add_argument('wiki', nargs='+')
     ap.add_argument('--pages', required=True)
     ap.add_argument('--skip', default='')
+    ap.add_argument('--empty', default='', help='columns that are empty although show-through measures as ink: h114L:7-9,...')
     ap.add_argument('--eval', action='store_true')
     ap.add_argument('--write', help='write transcription files NNN.txt into this directory')
     ap.add_argument('--rules', default='於于,余餘',
@@ -164,7 +196,12 @@ def main():
     skip = {k: int(v) for k, v in (x.split(':') for x in a.skip.split(',') if x)}
     rules = dict(r for r in (x.strip() for x in a.rules.split(',')) if len(r) == 2)
     blks = [(k, ''.join(rules.get(ch, ch) for ch in t)) for k, t in blocks(a.wiki)]
-    res = flow(skel, pages, blks, skip)
+    empty = set()
+    for x in filter(None, a.empty.split(',')):
+        k, cols = x.split(':')
+        lo, _, hi = cols.partition('-')
+        empty.update((k, c) for c in range(int(lo), int(hi or lo) + 1))
+    res = flow(skel, pages, blks, skip, empty)
     if a.write:
         write(res, Path(a.write), skel)
     nflag = sum(1 for cols in res.values() for _, _, f in cols if f)

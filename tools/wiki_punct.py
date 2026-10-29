@@ -29,6 +29,7 @@ PARTS = {   # part: (page range in layout.yaml, Wikisource sections)
     'juan01': ('036-094', ['詞曲部_結構第一', '詞曲部_詞采第二']),
     'juan02': ('h053L-h077L', ['詞曲部_音律第三']),
     'juan03': ('h082L-h109R', ['詞曲部_賓白第四', '詞曲部_科諢第五', '詞曲部_格局第六']),
+    'juan04': ('h110L-h142L', ['演習部_選劇第一', '演習部_變調第二']),
 }
 OUT = ROOT / 'text' / 'marks_wikisource.tsv'
 

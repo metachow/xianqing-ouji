@@ -12,6 +12,8 @@ Transcription format: see work/TRANSCRIPTION.md. One line per column, right to l
   { }      dense circles on every character inside (within one page only: a page
            that starts inside such a passage starts with '{')
   〔右|左〕 double-line small note (割注): right and left half-columns
+  ［ ］     a frame round the characters (曲牌, role and stage directions in a play); may
+           run on into the next column
   　       (full-width space) an empty cell
   ^N       at the start of a line: the column starts at row N (default: layout
            indent); negative = raised above the frame (抬頭)
@@ -37,6 +39,8 @@ TEXT_W = 120.0              # width of the text area (all columns)
 BANXIN_W = 21.0             # half of the 版心 strip, at the fore-edge
 BORDER = 0.9                # thick frame line
 RULE = 0.28                 # column rule
+FRAME_DX = 0.36             # ［frame］ side lines, from the column centre, in column widths
+FRAME_LW = 0.22
 PT = 2.845                  # pt per mm
 
 MEIPI = dict(size=4.6, row=5.6, pitch=9.0, gap=2.2)   # 眉批: glyph, row pitch, column pitch, gap above frame
@@ -81,12 +85,19 @@ class Page:
         self.banxin = None   # (label, leaf) override
         self.placed = []     # (column position, start row, cells) placed freely
         self.norule = set()  # K: no rule between columns K and K+1
+        self.frames = {}     # column index -> [(first item, end item, top closed, bottom closed)]
 
 
 def parse_page(path):
     page = Page()
     emph = False
-    for n, raw in enumerate(path.read_text(encoding='utf-8').splitlines(), 1):
+    lines = path.read_text(encoding='utf-8').splitlines()
+    # a ［frame］ continues from the previous column -- or from the previous page, when the
+    # first frame mark on this page is a ］
+    body = ''.join(l for l in lines if not l.startswith(('#', '@')))
+    marks = [ch for ch in body if ch in '［］']
+    carry = bool(marks) and marks[0] == '］'
+    for n, raw in enumerate(lines, 1):
         line = raw.rstrip()
         try:
             if line.startswith('#'):
@@ -114,19 +125,35 @@ def parse_page(path):
                 while m < len(line) and (line[m].isdigit() or (m == 1 and line[m] == '-')):
                     m += 1
                 start, line = int(line[1:m]), line[m:].lstrip(' ')
-            items, emph = parse_items(line, emph)
+            frames = [[0, None, False]] if carry else []
+            items, emph = parse_items(line, emph, frames)
+            carry = bool(frames) and frames[-1][1] is None
+            if frames:
+                page.frames[len(page.columns)] = [
+                    (s, len(items) if e is None else e, top, e is not None) for s, e, top in frames]
             page.columns.append((start, items))
         except ValueError as e:
             raise ValueError(f'{path.name} line {n}: {e}') from None
     return page
 
 
-def parse_items(s, emph):
-    """Items: ('c', char, mark) | ('e',) | ('n', right_cells, left_cells)."""
+def parse_items(s, emph, frames=None):
+    """Items: ('c', char, mark) | ('e',) | ('n', right_cells, left_cells).
+    ［ ］ (frames, in main text only) are appended to `frames` as [first item, end item or None, True]."""
     items, i = [], 0
     while i < len(s):
         ch = s[i]
-        if ch == '{':
+        if ch == '［':
+            if frames is None:
+                raise ValueError('［ only in main text')
+            if frames and frames[-1][1] is None:
+                raise ValueError('nested ［')
+            frames.append([len(items), None, True])
+        elif ch == '］':
+            if not frames or frames[-1][1] is not None:
+                raise ValueError('］ without ［')
+            frames[-1][1] = len(items)
+        elif ch == '{':
             emph = True
         elif ch == '}':
             emph = False
@@ -273,6 +300,7 @@ def render(scan, info, lay, page, variants, applied):
     # 版心: book title, section, leaf number
     label, leaf = page.banxin or (info['juan'], str(info['leaf']))
     leaf = re.sub(r'^二十(?=.)', '廿', leaf)    # the cut writes 廿一–廿九 (but 二十, 三十)
+    leaf = re.sub(r'^三十(?=.)', '三', leaf)    # and 三一–三三 (卷四; clear in the PKU copy)
     bxc = bx0 + BANXIN_W / 2
     y = top - 1.2 - BANXIN['row'] / 2
     for ch in '閒情偶寄':
@@ -334,6 +362,28 @@ def render(scan, info, lay, page, variants, applied):
                     if mk:
                         out.append(mark(hx + 0.2 * pitch_x, y - 0.32 * small, mk, 0.8 * small / 7.4))
             r += max(len(it[1]), len(it[2])) * note_pitch
+
+    # frames (［ ］): two side lines, closed by a cross line where the frame starts or ends
+    # in this column (open where it runs on to the next column)
+    for c, spans in page.frames.items():
+        items = page.columns[c][1]
+        rows, r = [], float(starts[c])
+        for it in items:
+            h = max(len(it[1]), len(it[2])) * note_pitch if it[0] == 'n' else 1
+            rows.append((r, r + h))
+            r += h
+        x, w = col_x(c), FRAME_DX * pitch_x
+        for s, e, closed_top, closed_bot in spans:
+            if e <= s:
+                continue
+            y0 = top - (rows[s][0] + 0.07) * pitch_y
+            y1 = top - (rows[e - 1][1] - 0.07) * pitch_y
+            for sx in (-w, w):
+                out.append(f'\\draw[line width={FRAME_LW}mm] ({x + sx:.2f}mm,{y0:.2f}mm) -- ({x + sx:.2f}mm,{y1:.2f}mm);\n')
+            if closed_top:
+                out.append(f'\\draw[line width={FRAME_LW}mm] ({x - w:.2f}mm,{y0:.2f}mm) -- ({x + w:.2f}mm,{y0:.2f}mm);\n')
+            if closed_bot:
+                out.append(f'\\draw[line width={FRAME_LW}mm] ({x - w:.2f}mm,{y1:.2f}mm) -- ({x + w:.2f}mm,{y1:.2f}mm);\n')
 
     # freely placed text (e.g. names set between two columns): column position may be
     # fractional (2.5 = on the rule between columns 2 and 3), rows too

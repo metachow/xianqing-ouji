@@ -17,7 +17,7 @@ and column for column like the original, with a modern apparatus. Classical Chin
 
 ## 全書重排進度
 
-全書八部十六卷（據本書總目）。目前完成卷首與卷一至卷三。
+全書八部十六卷（據本書總目）。目前完成卷首與卷一至卷四。
 
 | 部 | 卷 | 內容 | 進度 |
 |---|---|---|---|
@@ -25,7 +25,8 @@ and column for column like the original, with a modern apparatus. Classical Chin
 | 詞曲部 | 一 | 結構第一、詞采第二 | ✅ 同上；圈點暫依維基文庫句讀；眉批存疑作「□」 |
 | 詞曲部 | 二 | 音律第三 | ✅ 新流程：維基文庫文本排入原刻行款、對哈佛本逐葉通讀；句讀依維基文庫；眉批未錄 |
 | 詞曲部 | 三 | 賓白第四、科諢第五、格局第六、填詞餘論 | ✅ 同卷二 |
-| 演習部 | 四–五 | 選劇、變調、授曲、教白、脫套 | ⬜ 未開始 |
+| 演習部 | 四 | 選劇第一、變調第二（附琵琶記、明珠記改本二種） | ✅ 同卷二；戲文曲牌、腳色、科介照原刻加框 |
+| 演習部 | 五 | 授曲第三、教白第四、脫套第五 | ⬜ 未開始 |
 | 聲容部 | 六–七 | 選姿、修容、治服、習技 | ⬜ 未開始 |
 | 居室部 | 八–九 | 房舍、窗欄、牆壁、聯匾、山石 | ⬜ 未開始；🖼 窗欄、聯匾插圖十九幅已製線稿 |
 | 器玩部 | 十–十一 | 制度、位置 | ⬜ 未開始；🖼 暖椅式一幅已製線稿 |
@@ -47,7 +48,7 @@ and column for column like the original, with a modern apparatus. Classical Chin
 | 冊 | 卷 | 檔名 |
 |---|---|---|
 | 一 | 卷首、卷一、卷二 | `xianqing-ouji_ce1_juan01-02_*.pdf` |
-| 二 | 卷三（卷四待做） | `xianqing-ouji_ce2_juan03_*.pdf` |
+| 二 | 卷三、卷四 | `xianqing-ouji_ce2_juan03-04_*.pdf` |
 
 每冊自有書衣、編輯說明、校記與封底；書籤、目次與校記之連結限於本冊。檔名之 `ce` 為冊、`juan` 為卷；
 Release 版本號另計（v0.1 …）。
